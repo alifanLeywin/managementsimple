@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Columns\ImageColumn;
 
 class TransactionResource extends Resource
 {
@@ -45,7 +46,12 @@ class TransactionResource extends Resource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('user.name')->label('User'),
+            Tables\Columns\ImageColumn::make('category.image')
+            ->label('Image')
+            ->disk('public'),
             Tables\Columns\TextColumn::make('category.name')->label('Category'),
+            Tables\Columns\TextColumn::make('category.type')
+            ->badge(),
             Tables\Columns\TextColumn::make('amount')->money('IDR', true),
             Tables\Columns\TextColumn::make('transaction_date')->date(),
             Tables\Columns\TextColumn::make('created_at')->dateTime(),

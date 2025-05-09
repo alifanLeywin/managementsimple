@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
 
 class CategoryResource extends Resource
 {
@@ -31,15 +33,27 @@ class CategoryResource extends Resource
                 ->required(),
 
             Forms\Components\FileUpload::make('image')
-            ->image()
-            ->required(),
+                ->image()
+                ->directory('category-images') // Simpan di storage/app/public/category-images
+                ->visibility('public')
+                ->preserveFilenames()
+                ->enableDownload()
+                ->enableOpen()
+                ->deleteUploadedFileUsing(function ($file) {
+                    \Storage::disk('public')->delete($file);
+                })
+                ->getUploadedFileNameForStorageUsing(function ($file) {
+                    return $file->getClientOriginalName();
+                })
+                ->required(),
         ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\ImageColumn::make('image')->disk('public'),
+            ImageColumn::make('image')
+                ->disk('public'), // opsional: buat thumbnail bulat
 
             Tables\Columns\TextColumn::make('name'),
 
